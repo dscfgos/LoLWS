@@ -12,7 +12,7 @@ public class Message
 	private String            author;
 	private String            content;
 	private String            created_at;
-	private long              id;
+	private String            id;
 	private String            severity;
 	
 	private List<Translation> translations;
@@ -35,10 +35,10 @@ public class Message
 	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
 	}
-	public long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getSeverity() {

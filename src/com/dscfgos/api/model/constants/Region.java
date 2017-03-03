@@ -52,6 +52,21 @@ public enum Region
 		
 		return result;
 	}
+	
+	public static Region getRegionById(String id) 
+	{
+		Region result = null;
+		for (Region region : Region.values()) 
+		{
+			if (region.getId().equalsIgnoreCase(id)) 
+			{
+				result = region;
+				break;
+			}
+		}
+		
+		return result;
+	}
 
 	public static Region getRegionByPlatformId(PlatformId platformId) 
 	{

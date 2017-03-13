@@ -1,6 +1,6 @@
 package com.dscfgos.ws.classes.dtos;
 
-public class Summoner2 
+public class Summoner 
 {
 	private Long id;
 	private String name;

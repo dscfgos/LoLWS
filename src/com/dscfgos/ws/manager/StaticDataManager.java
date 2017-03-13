@@ -1,19 +1,21 @@
 package com.dscfgos.ws.manager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.dscfgos.api.model.classes.managers.RiotApiException;
 import com.dscfgos.api.model.constants.Region;
-import com.dscfgos.api.model.dtos.summoner.Summoner;
 import com.dscfgos.ws.classes.utils.LoLApiUtils;
 
-public class SummonerManager 
+public class StaticDataManager 
 {
-	public static Summoner getSummonerByRegionAndName(String region, String name)
+	public static List<String> getDataLanguagesByRegion(Region region)
 	{
-		Summoner result = new Summoner();
+		List<String> result = new ArrayList<>();
 		
 		try 
 		{
-			result = LoLApiUtils.getRiotApi().getSummonerByName(Region.getRegionByName(region), name);
+			result = LoLApiUtils.getRiotApi().getDataLanguages(region);
 		} 
 		catch (RiotApiException e) {
 			e.printStackTrace();

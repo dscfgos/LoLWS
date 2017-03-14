@@ -6,12 +6,12 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
-import com.dscfgos.admin.factory.BaseWrapperFactory;
-import com.dscfgos.admin.factory.FieldValue;
-import com.dscfgos.admin.factory.WhereOperation;
 import com.dscfgos.api.model.constants.Region;
-import com.dscfgos.postgreSQL.ConnectionManager;
+import com.dscfgos.utils.ConnectionManager;
 import com.dscfgos.ws.classes.wrappers.Locales;
+import com.dscfgos.ws.factory.BaseWrapperFactory;
+import com.dscfgos.ws.factory.FieldValue;
+import com.dscfgos.ws.factory.WhereOperation;
 import com.dscfgos.ws.manager.StaticDataManager;
 
 public class LocalesManager 

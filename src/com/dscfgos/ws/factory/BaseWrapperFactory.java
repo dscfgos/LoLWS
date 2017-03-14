@@ -1,11 +1,17 @@
-package com.dscfgos.admin.factory;
+package com.dscfgos.ws.factory;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +19,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.dscfgos.admin.LocalesManager;
-import com.dscfgos.postgreSQL.ConnectionManager;
+import com.dscfgos.utils.ConnectionManager;
 import com.dscfgos.utils.StringUtils;
 
 public class BaseWrapperFactory<T> 
@@ -23,6 +29,8 @@ public class BaseWrapperFactory<T>
 	// ****************************************************************************************
 	private static String SQL_SELECT_ITEM 		= "SELECT * FROM {0} WHERE {1};";
 	private static String SQL_SELECT_ALL_ITEMS 	= "SELECT * FROM {0} ;";
+
+
 	// ****************************************************************************************
 	// ENDING SECTION 		---->			PROPERTIES
 	// ****************************************************************************************
@@ -33,27 +41,30 @@ public class BaseWrapperFactory<T>
 	@SuppressWarnings("unchecked")
 	public T getItemByFields(Class<T> type, FieldValue[] sqlFields, WhereOperation operation)
 	{
-		
+
 		Class<?> cls = null;
 		Object obj = null;
 		ResultSet resultSet = null;
 		try 
 		{
 			resultSet = this.getItemResultSet(sqlFields, type, operation);
-			resultSet.next();
-
-			cls = Class.forName(type.getName());
-			obj = cls.newInstance();
-
-			ResultSetMetaData rsmd = resultSet.getMetaData();
-
-			for (int i = 0; i < rsmd.getColumnCount(); i++) 
+			if(resultSet.isBeforeFirst())
 			{
-				String columnName = rsmd.getColumnName(i+1);
-				Field classField = obj.getClass().getDeclaredField(columnName);
-				classField.setAccessible(true);
+				resultSet.next();
 
-				classField.set(obj, resultSet.getObject(columnName));
+				cls = Class.forName(type.getName());
+				obj = cls.newInstance();
+
+				ResultSetMetaData rsmd = resultSet.getMetaData();
+
+				for (int i = 0; i < rsmd.getColumnCount(); i++) 
+				{
+					String columnName = rsmd.getColumnName(i+1);
+					Field classField = obj.getClass().getDeclaredField(columnName);
+					classField.setAccessible(true);
+
+					classField.set(obj, resultSet.getObject(columnName));
+				}	
 			}
 		} 
 		catch (Exception e) 
@@ -81,7 +92,7 @@ public class BaseWrapperFactory<T>
 	public List<T> getItemsByFields(Class<T> type, FieldValue[] sqlFields, WhereOperation operation)
 	{
 		List<T> result = new ArrayList<>();
-		
+
 		Class<?> cls = null;
 		Object obj = null;
 		ResultSet resultSet = null;
@@ -94,7 +105,7 @@ public class BaseWrapperFactory<T>
 			while(resultSet.next())
 			{
 				obj = cls.newInstance();
-				
+
 				for (int i = 0; i < rsmd.getColumnCount(); i++) 
 				{
 					String columnName = rsmd.getColumnName(i+1);
@@ -103,10 +114,10 @@ public class BaseWrapperFactory<T>
 
 					classField.set(obj, resultSet.getObject(columnName));
 				}
-				
+
 				result.add((T) obj);
 			}
-			
+
 		} 
 		catch (Exception e) 
 		{
@@ -129,26 +140,26 @@ public class BaseWrapperFactory<T>
 		return result;
 	}
 
-	
+
 	@SuppressWarnings("unchecked")
 	public List<T> getAllItems(Class<T> type)
 	{
 		ArrayList<T> result = new ArrayList<>();
-		
+
 		Class<?> cls = null;
 		Object obj = null;
 		ResultSet resultSet = null;
 		try 
 		{
 			resultSet = this.getAllItemsResultSet(type);
-			
+
 			cls = Class.forName(type.getName());
 			ResultSetMetaData rsmd = resultSet.getMetaData();
 
 			while(resultSet.next())
 			{
 				obj = cls.newInstance();
-				
+
 				for (int i = 0; i < rsmd.getColumnCount(); i++) 
 				{
 					String columnName = rsmd.getColumnName(i+1);
@@ -157,7 +168,7 @@ public class BaseWrapperFactory<T>
 
 					classField.set(obj, resultSet.getObject(columnName));
 				}
-				
+
 				result.add((T) obj);
 			}
 		} 
@@ -201,7 +212,7 @@ public class BaseWrapperFactory<T>
 			try 
 			{
 				String query = "";
-				
+
 				if(operation == WhereOperation.AND)
 				{
 					query = StringUtils.substitute(SQL_SELECT_ITEM, type.getSimpleName(), this.getWhereANDClause(sqlFields));	
@@ -210,8 +221,8 @@ public class BaseWrapperFactory<T>
 				{
 					query = StringUtils.substitute(SQL_SELECT_ITEM, type.getSimpleName(), this.getWhereORClause(sqlFields));
 				}
-				
-				
+
+
 				conn = ConnectionManager.getConnection();
 				statement = conn.prepareStatement(query);
 
@@ -237,40 +248,89 @@ public class BaseWrapperFactory<T>
 
 		return resultSet;	
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public T addItem(Class<T> type, Object item)
+	{
+		Object result = item ;
+		try 
+		{
+			Connection conn = ConnectionManager.getConnection();
+
+			PreparedStatement statement = conn.prepareStatement(getInsertSQLString(type, item), Statement.RETURN_GENERATED_KEYS);
+
+			Field[] fields = item.getClass().getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) 
+			{
+				try 
+				{
+					fields[i].setAccessible(true);
+
+					Object value = fields[i].get(item);
+					int sqlType = this.javaToSQLType(fields[i].getType());
+					statement.setObject(i+1, value, sqlType);
+
+				} 
+				catch (IllegalArgumentException | IllegalAccessException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+
+//			int affectedRows = statement.executeUpdate();
+//			int auto_id = -1;
+//			if(affectedRows != 0)
+//			{
+//				ResultSet rs = statement.getGeneratedKeys();
+//				rs.next();
+//				auto_id = rs.getInt(1);
+//			}
+
+			statement.close();
+			conn.commit();
+			conn.close();
+		}         
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		return  (T) result ;
+	}
+
 	private ResultSet getAllItemsResultSet(Class<T> type)
 	{
 		ResultSet resultSet = null;
 
-		
-			Connection conn = null ;
-			PreparedStatement statement = null;
 
-			try 
+		Connection conn = null ;
+		PreparedStatement statement = null;
+
+		try 
+		{
+			String query = StringUtils.substitute(SQL_SELECT_ALL_ITEMS, type.getSimpleName());
+
+			conn = ConnectionManager.getConnection();
+			statement = conn.prepareStatement(query);
+
+			Boolean isResult = statement.execute();
+
+			if(isResult)
 			{
-				String query = StringUtils.substitute(SQL_SELECT_ALL_ITEMS, type.getSimpleName());
-				
-				conn = ConnectionManager.getConnection();
-				statement = conn.prepareStatement(query);
-
-				Boolean isResult = statement.execute();
-
-				if(isResult)
-				{
-					resultSet = statement.getResultSet();
-				}
-
-				conn.commit();
-			}         
-			catch (SQLException e) 
-			{
-				e.printStackTrace();
+				resultSet = statement.getResultSet();
 			}
-		
+
+			conn.commit();
+		}         
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+
 
 		return resultSet;	
 	}
-	
+
 	private String getWhereANDClause(FieldValue[] sqlFields) 
 	{
 		String result = "";
@@ -288,13 +348,13 @@ public class BaseWrapperFactory<T>
 					result += " AND " + sqlFields[i].getName() + " = ?" ;
 				}
 			}
-			
+
 			result += ")" ;
 		}
-		
+
 		return result;
 	}
-	
+
 	private String getWhereORClause(FieldValue[] sqlFields) 
 	{
 		String result = "";
@@ -312,16 +372,97 @@ public class BaseWrapperFactory<T>
 					result += " OR " + sqlFields[i].getName() + " = ?" ;
 				}
 			}
-			
+
 			result += ")" ;
 		}
-		
+
+		return result;
+	}
+
+	private String getInsertSQLString(Class<T> type, Object item)
+	{
+		String result = "";
+		String sqlFieldsString = "";
+		String sqlValuesString = "";
+
+		if(item != null)
+		{
+			Field[] fields = item.getClass().getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) 
+			{
+				if(i==0)
+				{
+					fields[i].setAccessible(true);
+					sqlFieldsString += "\""+fields[i].getName()+"\"";
+					sqlValuesString += "?";
+				}
+				else
+				{
+					sqlFieldsString += "," +"\""+fields[i].getName()+"\"";
+					sqlValuesString += " , ?";
+				}
+			}
+
+			result = StringUtils.substitute("INSERT INTO {0} ({1}) VALUES ({2});", type.getSimpleName(),sqlFieldsString, sqlValuesString);
+		}
+
+		return result;
+	}
+
+	private int javaToSQLType(Class<?> type)
+	{
+		int result = -1;
+		if(type == String.class || type == char.class)
+		{
+			result = Types.VARCHAR;
+		}
+		else if(type == BigDecimal.class)
+		{
+			result = Types.NUMERIC;
+		}
+		else if(type == Boolean.class || type == boolean.class)
+		{
+			result = Types.BOOLEAN;
+		}
+		else if(type == Integer.class || type == int.class)
+		{
+			result = Types.INTEGER;
+		}
+		else if(type == Long.class || type == long.class)
+		{
+			result = Types.BIGINT;
+		}
+		else if(type == Float.class || type == float.class)
+		{
+			result = Types.REAL;
+		}
+		else if(type == Double.class || type == double.class)
+		{
+			result = Types.FLOAT;
+		}
+		else if(type == byte[].class)
+		{
+			result = Types.BINARY;
+		}
+		else if(type == Date.class)
+		{
+			result = Types.DATE;
+		}
+		else if(type == Time.class)
+		{
+			result = Types.TIME;
+		}
+		else if(type == Timestamp.class)
+		{
+			result = Types.TIMESTAMP;
+		}
+
 		return result;
 	}
 	// ****************************************************************************************
 	// ENDING SECTION 		---->			PRIVATE METHODS
 	// ****************************************************************************************
-	
 
-	
+
+
 }

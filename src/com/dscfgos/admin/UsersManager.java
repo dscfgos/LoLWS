@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.dscfgos.postgreSQL.ConnectionManager;
+import com.dscfgos.utils.ConnectionManager;
 
 public class UsersManager 
 {

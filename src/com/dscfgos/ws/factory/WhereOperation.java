@@ -1,4 +1,4 @@
-package com.dscfgos.admin.factory;
+package com.dscfgos.ws.factory;
 
 public enum WhereOperation {
 	AND, OR;

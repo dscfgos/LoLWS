@@ -6,11 +6,11 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
-import com.dscfgos.admin.factory.BaseWrapperFactory;
-import com.dscfgos.admin.factory.FieldValue;
-import com.dscfgos.admin.factory.WhereOperation;
-import com.dscfgos.postgreSQL.ConnectionManager;
+import com.dscfgos.utils.ConnectionManager;
 import com.dscfgos.ws.classes.wrappers.Shards;
+import com.dscfgos.ws.factory.BaseWrapperFactory;
+import com.dscfgos.ws.factory.FieldValue;
+import com.dscfgos.ws.factory.WhereOperation;
 import com.dscfgos.ws.manager.StatusManager;
 
 public class ShardsManager 
@@ -54,6 +54,17 @@ public class ShardsManager
 	
 		return result;
 	}
+	
+	public static Shards getShardsById(int shardId)
+	{
+		FieldValue field = new FieldValue("id", shardId, Types.INTEGER);
+		
+		BaseWrapperFactory<Shards> baseFactory = new BaseWrapperFactory<>();
+		Shards result = baseFactory.getItemByFields(Shards.class, new FieldValue[]{field}, WhereOperation.AND);
+	
+		return result;
+	}
+	
 	
 	public static List<Shards> getAllShards()
 	{

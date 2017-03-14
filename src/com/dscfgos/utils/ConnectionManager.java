@@ -1,12 +1,10 @@
-package com.dscfgos.postgreSQL;
+package com.dscfgos.utils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
-import com.dscfgos.utils.StringUtils;
 
 public class ConnectionManager 
 {

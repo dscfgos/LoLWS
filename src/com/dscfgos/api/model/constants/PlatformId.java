@@ -35,4 +35,19 @@ public enum PlatformId
 	public String toString() {
 		return getName();
 	}
+	
+	public static PlatformId getPlatformByName(String name) 
+	{
+		PlatformId result = null;
+		for (PlatformId region : PlatformId.values()) 
+		{
+			if (region.getName().equals(name.toLowerCase())) 
+			{
+				result = region;
+				break;
+			}
+		}
+		
+		return result;
+	}
 }

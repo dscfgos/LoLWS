@@ -17,7 +17,7 @@ import com.dscfgos.admin.LocalesManager;
 import com.dscfgos.admin.ShardsLocalesManager;
 import com.dscfgos.admin.ShardsManager;
 import com.dscfgos.api.model.constants.Region;
-import com.dscfgos.ws.classes.dtos.Shard;
+import com.dscfgos.ws.classes.dtos.ShardDTO;
 import com.dscfgos.ws.classes.wrappers.Locales;
 import com.dscfgos.ws.classes.wrappers.Shards;
 import com.dscfgos.ws.classes.wrappers.Shards_Locales;
@@ -36,7 +36,7 @@ public class ShardsWS
 	{
 		List<Shards> shards = ShardsManager.getAllShards();
 		
-		List<Shard> result = new ArrayList<>();
+		List<ShardDTO> result = new ArrayList<>();
 		
 		for (Shards shard : shards) 
 		{
@@ -52,7 +52,7 @@ public class ShardsWS
 			{
 				List<Locales> locales = LocalesManager.getLocaleByIds(ids);
 				
-				Shard shardDTO = new Shard();
+				ShardDTO shardDTO = new ShardDTO();
 				BeanUtils.copyProperties(shardDTO, shard);
 				
 				shardDTO.setLocales(locales);

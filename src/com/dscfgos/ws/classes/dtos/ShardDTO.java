@@ -7,7 +7,7 @@ import com.dscfgos.ws.classes.wrappers.Locales;
 /**
  * @author dscfgos
  */
-public class Shard 
+public class ShardDTO 
 {
 	private int				id;
 	private String       	hostname;

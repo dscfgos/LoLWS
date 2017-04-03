@@ -192,6 +192,102 @@ public class BaseWrapperFactory<T>
 		}
 		return result;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public T addItem(Class<T> type, Object item)
+	{
+		Object result = item ;
+		try 
+		{
+			Connection conn = ConnectionManager.getConnection();
+
+			PreparedStatement statement = conn.prepareStatement(getInsertSQLString(type, item), Statement.RETURN_GENERATED_KEYS);
+
+			Field[] fields = item.getClass().getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) 
+			{
+				try 
+				{
+					fields[i].setAccessible(true);
+
+					Object value = fields[i].get(item);
+					int sqlType = this.javaToSQLType(fields[i].getType());
+					statement.setObject(i+1, value, sqlType);
+
+				} 
+				catch (IllegalArgumentException | IllegalAccessException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+			
+			statement.execute();
+			
+			statement.close();
+			conn.commit();
+			conn.close();
+		}         
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		return  (T) result ;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public T updateItem(Class<T> type, Object item, FieldValue[] toUpdateSqlFields, FieldValue[] whereSqlFieldsKeys)
+	{
+		Object result = item ;
+		try 
+		{
+			Connection conn = ConnectionManager.getConnection();
+
+			PreparedStatement statement = conn.prepareStatement(getUpdateSQLString(type, toUpdateSqlFields, whereSqlFieldsKeys));
+
+			int i = 1;
+			
+			for(int j=0;j<toUpdateSqlFields.length;j++)
+			{
+				try 
+				{
+					statement.setObject(i, toUpdateSqlFields[j].getValue(), toUpdateSqlFields[j].getSqlType());
+				} 
+				catch (IllegalArgumentException e) 
+				{
+					e.printStackTrace();
+				}
+				i++;
+			}
+			
+			for(int j=0;j<whereSqlFieldsKeys.length;j++)
+			{
+				try 
+				{
+					statement.setObject(i, whereSqlFieldsKeys[j].getValue(), whereSqlFieldsKeys[j].getSqlType());
+
+				} 
+				catch (IllegalArgumentException e) 
+				{
+					e.printStackTrace();
+				}
+				i++;
+			}
+			
+			statement.executeUpdate();
+			
+			statement.close();
+			conn.commit();
+			conn.close();
+		}         
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		return  (T) result ;
+	}
 	// ****************************************************************************************
 	// ENDING SECTION 		---->			PUBLIC METHODS
 	// ****************************************************************************************
@@ -249,54 +345,7 @@ public class BaseWrapperFactory<T>
 		return resultSet;	
 	}
 
-	@SuppressWarnings("unchecked")
-	public T addItem(Class<T> type, Object item)
-	{
-		Object result = item ;
-		try 
-		{
-			Connection conn = ConnectionManager.getConnection();
-
-			PreparedStatement statement = conn.prepareStatement(getInsertSQLString(type, item), Statement.RETURN_GENERATED_KEYS);
-
-			Field[] fields = item.getClass().getDeclaredFields();
-			for (int i = 0; i < fields.length; i++) 
-			{
-				try 
-				{
-					fields[i].setAccessible(true);
-
-					Object value = fields[i].get(item);
-					int sqlType = this.javaToSQLType(fields[i].getType());
-					statement.setObject(i+1, value, sqlType);
-
-				} 
-				catch (IllegalArgumentException | IllegalAccessException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-
-//			int affectedRows = statement.executeUpdate();
-//			int auto_id = -1;
-//			if(affectedRows != 0)
-//			{
-//				ResultSet rs = statement.getGeneratedKeys();
-//				rs.next();
-//				auto_id = rs.getInt(1);
-//			}
-
-			statement.close();
-			conn.commit();
-			conn.close();
-		}         
-		catch (SQLException e) 
-		{
-			e.printStackTrace();
-		}
-		
-		return  (T) result ;
-	}
+	
 
 	private ResultSet getAllItemsResultSet(Class<T> type)
 	{
@@ -332,6 +381,30 @@ public class BaseWrapperFactory<T>
 	}
 
 	private String getWhereANDClause(FieldValue[] sqlFields) 
+	{
+		String result = "";
+		if(sqlFields != null && sqlFields.length > 0)
+		{
+			result += "(" ;
+			for (int i = 0; i < sqlFields.length; i++) 
+			{
+				if(i==0)
+				{
+					result += sqlFields[i].getName() + " = ?" ;
+				}
+				else
+				{
+					result += " AND " + sqlFields[i].getName() + " = ?" ;
+				}
+			}
+
+			result += ")" ;
+		}
+
+		return result;
+	}
+	
+	private String getWhereANDClauseForUpdate(FieldValue[] sqlFields) 
 	{
 		String result = "";
 		if(sqlFields != null && sqlFields.length > 0)
@@ -404,6 +477,30 @@ public class BaseWrapperFactory<T>
 			}
 
 			result = StringUtils.substitute("INSERT INTO {0} ({1}) VALUES ({2});", type.getSimpleName(),sqlFieldsString, sqlValuesString);
+		}
+
+		return result;
+	}
+	
+	private String getUpdateSQLString(Class<T> type, FieldValue[] toUpdateSqlFields, FieldValue[] sqlFields)
+	{
+		String result = "";
+		String sqlFieldsString = "";
+	
+		if(toUpdateSqlFields != null && toUpdateSqlFields.length > 0)
+		{
+			for (int i = 0; i < toUpdateSqlFields.length; i++) 
+			{
+				if(i!=0)
+				{
+					sqlFieldsString += ", ";
+				}
+				sqlFieldsString += "\""+toUpdateSqlFields[i].getName()+"\" = ?";
+				
+			}
+
+			String where  = getWhereANDClauseForUpdate(sqlFields);
+			result = StringUtils.substitute("UPDATE {0} SET {1} WHERE {2};", type.getSimpleName(),sqlFieldsString, where);
 		}
 
 		return result;

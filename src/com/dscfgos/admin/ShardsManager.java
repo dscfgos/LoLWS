@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.HashMap;
 import java.util.List;
 
 import com.dscfgos.utils.ConnectionManager;
@@ -15,6 +16,9 @@ import com.dscfgos.ws.manager.StatusManager;
 
 public class ShardsManager 
 {
+	
+	private static HashMap<Integer, Shards> mapShards = new HashMap<>();
+	
 	private static String SQL_INSERT_SHARDS = "INSERT INTO SHARDS (HOSTNAME, NAME ,REGION_TAG, SLUG) VALUES (?,?,?,?);";
 	
 	public static void insertShards()
@@ -57,10 +61,16 @@ public class ShardsManager
 	
 	public static Shards getShardsById(int shardId)
 	{
-		FieldValue field = new FieldValue("id", shardId, Types.INTEGER);
-		
-		BaseWrapperFactory<Shards> baseFactory = new BaseWrapperFactory<>();
-		Shards result = baseFactory.getItemByFields(Shards.class, new FieldValue[]{field}, WhereOperation.AND);
+		Shards result = mapShards.get(shardId);
+		if(result==null)
+		{
+			FieldValue field = new FieldValue("id", shardId, Types.INTEGER);
+			
+			BaseWrapperFactory<Shards> baseFactory = new BaseWrapperFactory<>();
+			result = baseFactory.getItemByFields(Shards.class, new FieldValue[]{field}, WhereOperation.AND);
+			
+			mapShards.put(result.getId(), result);
+		}
 	
 		return result;
 	}

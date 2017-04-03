@@ -61,4 +61,19 @@ public enum Locale {
 	public String toString() {
 		return getName();
 	}
+	
+	public static Locale getById(String localeId)
+	{
+		Locale result= null;
+		for (Locale locale : Locale.values()) 
+		{
+			if (locale.getName().equalsIgnoreCase(localeId)) 
+			{
+				result = locale;
+				break;
+			}
+		}
+		
+		return result;
+	}
 }

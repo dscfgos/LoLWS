@@ -19,7 +19,8 @@ public class StaticDataManager
 {
 	private static HashMap<String, SummonerSpell> mapSummonerSpell = new HashMap<>();
 
-	
+	private static HashMap<Long, SummonerSpell> mapSimpleSummonerSpell = new HashMap<>();
+
 	public static List<String> getDataLanguagesByRegion(Region region)
 	{
 		List<String> result = new ArrayList<>();
@@ -53,6 +54,32 @@ public class StaticDataManager
 			e.printStackTrace();
 		}
 		
+		return result;
+	}
+	
+	
+	public static SummonerSpell getSummonerSpellById(long id,int regionId)
+	{
+		SummonerSpell result = mapSimpleSummonerSpell.get(id);
+		if(result == null)
+		{
+			try 
+			{
+				Shards shard = ShardsManager.getShardsById(regionId);
+				if(shard != null)
+				{
+					result = LoLApiUtils.getRiotApi().getDataSummonerSpell(Region.getRegionByName(shard.getSlug()), new Long(id).intValue());
+					if(result != null)
+					{
+						mapSimpleSummonerSpell.put(id, result);
+					}
+				}
+			} 
+			catch (RiotApiException e) {
+				e.printStackTrace();
+			}	
+		}
+			
 		return result;
 	}
 	

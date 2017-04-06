@@ -2,6 +2,8 @@ package com.dscfgos.api.model.dtos.game;
 
 import java.util.Set;
 
+import com.dscfgos.ws.classes.dtos.GameDTO;
+
 /**
  * @author dscfgos
  * @version 1.0
@@ -11,13 +13,13 @@ import java.util.Set;
  */
 public class RecentGames 
 {
-	private Set<Game> games	; // - Collection of recent games played (max 10).
+	private Set<GameDTO> games	; // - Collection of recent games played (max 10).
 	private long summonerId; // - Summoner ID.
 	
-	public Set<Game> getGames() {
+	public Set<GameDTO> getGames() {
 		return games;
 	}
-	public void setGames(Set<Game> games) {
+	public void setGames(Set<GameDTO> games) {
 		this.games = games;
 	}
 	public long getSummonerId() {

@@ -14,4 +14,8 @@ public class ErrorsConstants
 	//Current Game operation error.
 	public static final String CG_001 = "CG_001";
 	
+	
+	//Recent Games operation error.
+	public static final String RG_001 = "RG_001";
+	
 }

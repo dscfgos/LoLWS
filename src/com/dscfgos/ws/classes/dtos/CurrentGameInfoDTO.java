@@ -14,7 +14,7 @@ import com.dscfgos.api.model.dtos.current_game.Observer;
  */
 public class CurrentGameInfoDTO 
 {
-	private List<BannedChampionDTO> bannedChampions ; 		// - Banned champion information
+	private List<BannedChampionDTO> bannedChampions ; 	// - Banned champion information
 	private long gameId ; 								// - The ID of the game
 	private long gameLength ; 							// - The amount of time in seconds that has passed since the game started
 	private GameMode gameMode ; 						// - The game mode (Legal values: CLASSIC, ODIN, ARAM, TUTORIAL, ONEFORALL, ASCENSION, FIRSTBLOOD, KINGPORO)

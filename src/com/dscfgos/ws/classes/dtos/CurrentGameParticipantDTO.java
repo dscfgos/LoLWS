@@ -2,6 +2,7 @@ package com.dscfgos.ws.classes.dtos;
 
 import java.util.List;
 
+import com.dscfgos.api.model.dtos.champion_mastery.ChampionMastery;
 import com.dscfgos.api.model.dtos.current_game.Mastery;
 import com.dscfgos.api.model.dtos.current_game.Rune;
 import com.dscfgos.api.model.dtos.static_data.Champion;
@@ -25,6 +26,31 @@ public class CurrentGameParticipantDTO
 	private long summonerId ; 			// - The summoner ID of this participant
 	private String summonerName ; 		// - The summoner name of this participant
 	private long teamId ; 				// - The team ID of this participant, indicating the participant's team
+	private ChampionMastery championMastery ;
+
+	private int totalSessionsLost;
+	private int totalSessionsPlayed;
+	private int totalSessionsWon;
+
+	
+	public int getTotalSessionsLost() {
+		return totalSessionsLost;
+	}
+	public void setTotalSessionsLost(int totalSessionsLost) {
+		this.totalSessionsLost = totalSessionsLost;
+	}
+	public int getTotalSessionsPlayed() {
+		return totalSessionsPlayed;
+	}
+	public void setTotalSessionsPlayed(int totalSessionsPlayed) {
+		this.totalSessionsPlayed = totalSessionsPlayed;
+	}
+	public int getTotalSessionsWon() {
+		return totalSessionsWon;
+	}
+	public void setTotalSessionsWon(int totalSessionsWon) {
+		this.totalSessionsWon = totalSessionsWon;
+	}
 	public boolean isBot() {
 		return bot;
 	}
@@ -91,6 +117,10 @@ public class CurrentGameParticipantDTO
 	public void setChampion(Champion champion) {
 		this.champion = champion;
 	}
-	
-	
+	public ChampionMastery getChampionMastery() {
+		return championMastery;
+	}
+	public void setChampionMastery(ChampionMastery championMastery) {
+		this.championMastery = championMastery;
+	}
 }

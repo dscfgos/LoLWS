@@ -2,20 +2,20 @@ package com.dscfgos.api.model.constants;
 
 public enum Region 
 {
-	BR("BR1", "br.api.pvp.net", "br"),
-	EUNE("EUNE1", "eune.api.pvp.net", "eune"),
-	EUW("EUW1", "euw.api.pvp.net", "euw"),
-	JP("JP1", "jp.api.pvp.net", "jp"),
-	KR("KR", "kr.api.pvp.net", "kr"),
-	LAN("LA1", "lan.api.pvp.net", "lan"),
-	LAS("LA2", "las.api.pvp.net", "las"),
-	NA("NA1", "na.api.pvp.net", "na"),
-	OCE("OC1", "oce.api.pvp.net", "oce"),
-	TR("TR1", "tr.api.pvp.net", "tr"),
-	RU("RU", "ru.api.pvp.net", "ru"),
-	PBE("PBE1", "pbe.api.pvp.net", "pbe"),
-	GLOBAL("GLOBAL", "global.api.pvp.net", "global");
-	
+	BR("BR1", "br1.api.riotgames.com", "br"),
+	EUNE("EUNE1", "eun1.api.riotgames.com", "eune"),
+	EUW("EUW1", "euw1.api.riotgames.com", "euw"),
+	JP("JP1", "jp1.api.riotgames.com", "jp"),
+	KR("KR", "kr.api.riotgames.com", "kr"),
+	LAN("LA1", "la1.api.riotgames.com", "lan"),
+	LAS("LA2", "la2.api.riotgames.com", "las"),
+	NA("NA1", "na1.api.riotgames.com", "na"),
+	OCE("OC1", "oc1.api.riotgames.com", "oce"),
+	TR("TR1", "tr1.api.riotgames.com", "tr"),
+	RU("RU", "ru.api.riotgames.com", "ru"),
+	PBE("PBE1", "pbe1.api.riotgames.com", "pbe"),
+	GLOBAL("GLOBAL", "global.api.riotgames.com", "global");
+
 	private String id ;
 	private String endpoint;
 	private String region;
@@ -35,6 +35,9 @@ public enum Region
 	}
 	public String getEndpoint() {
 		return getEndpoint(true);
+	}
+	public String getV3Endpoint() {
+		return getV3Endpoint(false);
 	}
 	
 	
@@ -73,9 +76,20 @@ public enum Region
 		return getRegionByName(platformId.getName());
 	}
 	
+	@Deprecated
 	public String getEndpoint(boolean withRegion) 
 	{
 		String url = "https://" + endpoint + "/api/lol/";
+		if (withRegion) 
+		{
+			url += getRegion();
+		}
+		return url;
+	}
+	
+	public String getV3Endpoint(boolean withRegion) 
+	{
+		String url = "https://" + endpoint + "/lol/";
 		if (withRegion) 
 		{
 			url += getRegion();

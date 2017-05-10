@@ -22,6 +22,7 @@ import com.dscfgos.api.model.constants.ItemData;
 import com.dscfgos.api.model.constants.Locale;
 import com.dscfgos.api.model.constants.Region;
 import com.dscfgos.api.model.dtos.static_data.Item;
+import com.dscfgos.api.model.endpoints.methods.v3.static_data.StaticDataApiMethod;
 import com.dscfgos.api.utils.Convert;
 
 public class GetDataItem extends StaticDataApiMethod {

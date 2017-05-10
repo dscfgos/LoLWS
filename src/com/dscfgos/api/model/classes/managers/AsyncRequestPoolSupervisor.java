@@ -47,7 +47,7 @@ public class AsyncRequestPoolSupervisor extends Thread {
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
-				RiotApi.log.log(Level.WARNING, "Supervisor Sleep Interrupted", e);
+				RiotApiV3.log.log(Level.WARNING, "Supervisor Sleep Interrupted", e);
 			}
 		}
 	}

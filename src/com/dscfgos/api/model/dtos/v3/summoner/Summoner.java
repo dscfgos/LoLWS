@@ -1,9 +1,9 @@
-package com.dscfgos.api.model.dtos.summoner;
+package com.dscfgos.api.model.dtos.v3.summoner;
 
 /**
  * @author dscfgos
- * @version 1.0
- * @category summoner-v1.4
+ * @version 2.0
+ * @category summoner-v3
  * <br />
  * This object contains summoner information.
  */
@@ -14,6 +14,7 @@ public class Summoner
 	private int    profileIconId;		// - ID of the summoner icon associated with the summoner.
 	private long   revisionDate;		// - Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: profile icon change, playing the tutorial or advanced tutorial, finishing a game, summoner name change
 	private long   summonerLevel;		// - Summoner level associated with the summoner.
+	private long   accountId;			// - Account ID
 	
 	public long getId() {
 		return id;
@@ -44,5 +45,11 @@ public class Summoner
 	}
 	public void setSummonerLevel(long summonerLevel) {
 		this.summonerLevel = summonerLevel;
+	}
+	public long getAccountId() {
+		return accountId;
+	}
+	public void setAccountId(long accountId) {
+		this.accountId = accountId;
 	}
 }

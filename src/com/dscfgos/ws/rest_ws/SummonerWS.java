@@ -17,16 +17,24 @@ public class SummonerWS
 	@GET
 	@Path("/users")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getQSummonerByName(@QueryParam("region") int regionId, @QueryParam("name") String name)
+	public String getQSummonerByName(@QueryParam("region") int regionId, @QueryParam("summonerName") String summonerName)
 	{
-		return gson.toJson(SummonerManager.getSummonerByRegionAndName(regionId,name));
+		return gson.toJson(SummonerManager.getSummonerByRegionAndName(regionId,summonerName));
+	}
+	
+	@GET
+	@Path("/usersids")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getQSummonerById(@QueryParam("region") int regionId, @QueryParam("summonerId") String summonerId)
+	{
+		return gson.toJson(SummonerManager.getSummonerByRegionAndId(regionId,summonerId));
 	}
 	
 	@GET
 	@Path("/update")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String updateSummonerById(@QueryParam("region") int regionId, @QueryParam("name") String name)
+	public String updateSummonerById(@QueryParam("region") int regionId, @QueryParam("summonerName") String summonerName)
 	{
-		return gson.toJson(SummonerManager.updateSummonerByRegionAndName(regionId,name));
+		return gson.toJson(SummonerManager.updateSummonerByRegionAndName(regionId,summonerName));
 	}
 }

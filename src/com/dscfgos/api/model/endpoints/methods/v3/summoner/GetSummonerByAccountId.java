@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package com.dscfgos.api.model.endpoints.methods.static_data;
-
-import java.util.List;
+package com.dscfgos.api.model.endpoints.methods.v3.summoner;
 
 import com.dscfgos.api.model.classes.managers.ApiConfig;
 import com.dscfgos.api.model.constants.Region;
+import com.dscfgos.api.model.dtos.v3.summoner.Summoner;
 import com.google.gson.reflect.TypeToken;
 
-public class GetDataLanguages extends StaticDataApiMethod {
+public class GetSummonerByAccountId extends SummonerApiMethod {
 
-	public GetDataLanguages(ApiConfig config, Region region) {
+	public GetSummonerByAccountId(ApiConfig config, Region region, String accountId) {
 		super(config);
 		setRegion(region);
-		setReturnType(new TypeToken<List<String>>() {
+		setReturnType(new TypeToken<Summoner>() {
 		}.getType());
-		setUrlBase("https://global.api.pvp.net/api/lol/static-data/" + region + "/v1.2/languages");
+		setUrlBase(region.getV3Endpoint() + "summoner/v3/summoners/by-account/" + accountId);
 		addApiKeyParameter();
 	}
 }

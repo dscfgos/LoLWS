@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package com.dscfgos.api.model.endpoints.methods.summoner;
-
-import java.util.Map;
+package com.dscfgos.api.model.endpoints.methods.v3.static_data;
 
 import com.dscfgos.api.model.classes.managers.ApiConfig;
-import com.dscfgos.api.model.constants.Region;
-import com.dscfgos.api.model.dtos.summoner.Summoner;
-import com.google.gson.reflect.TypeToken;
+import com.dscfgos.api.model.classes.managers.ApiMethod;
 
-public class GetSummonersById extends SummonerApiMethod {
+abstract public class StaticDataApiMethod extends ApiMethod {
 
-	public GetSummonersById(ApiConfig config, Region region, String summonerIds) {
-		super(config);
-		setRegion(region);
-		setReturnType(new TypeToken<Map<String, Summoner>>() {
-		}.getType());
-		setUrlBase(region.getEndpoint() + "/v1.4/summoner/" + summonerIds);
-		addApiKeyParameter();
+	protected StaticDataApiMethod(ApiConfig config) {
+		super(config, "staticdata");
 	}
 }

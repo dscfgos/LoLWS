@@ -16,8 +16,8 @@ import java.util.logging.Level;
 import com.dscfgos.api.model.classes.managers.ApiConfig;
 import com.dscfgos.api.model.classes.managers.ApiMethod;
 import com.dscfgos.api.model.classes.managers.HttpHeadParameter;
-import com.dscfgos.api.model.classes.managers.RiotApi;
 import com.dscfgos.api.model.classes.managers.RiotApiException;
+import com.dscfgos.api.model.classes.managers.RiotApiV3;
 import com.dscfgos.api.model.classes.managers.rate.RateLimit;
 import com.dscfgos.api.model.classes.managers.rate.RateLimitException;
 import com.dscfgos.api.model.classes.managers.rate.RateLimitList;
@@ -146,30 +146,30 @@ public class Request
 		} catch (RateLimitException e) {
 			setException(e);
 			setState(RequestState.Failed);
-			RiotApi.log.fine("[" + object + "] Request > RateLimitException: " + e.getMessage());
+			RiotApiV3.log.fine("[" + object + "] Request > RateLimitException: " + e.getMessage());
 			throw e;
 		} catch (RiotApiException e) {
 			setException(e);
 			setState(RequestState.Failed);
-			RiotApi.log.fine("[" + object + "] Request > RiotApiException: " + e.getMessage());
+			RiotApiV3.log.fine("[" + object + "] Request > RiotApiException: " + e.getMessage());
 			throw e;
 		} catch (SocketTimeoutException e) {
 			RiotApiException exception = new RiotApiException(RiotApiException.TIMEOUT_EXCEPTION);
 			setException(exception);
 			setState(RequestState.Timeout);
-			RiotApi.log.fine("[" + object + "] Request > Timeout");
+			RiotApiV3.log.fine("[" + object + "] Request > Timeout");
 			throw exception;
 		} catch (IOException e) {
 			RiotApiException exception = new RiotApiException(RiotApiException.IOEXCEPTION);
 			setException(exception);
 			setState(RequestState.Failed);
-			RiotApi.log.log(Level.SEVERE, "[" + object + "] Request > IOException", e);
+			RiotApiV3.log.log(Level.SEVERE, "[" + object + "] Request > IOException", e);
 			throw exception;
 		} catch (NullPointerException e) {
 			RiotApiException exception = new RiotApiException(RiotApiException.NULLPOINTEREXCEPTION);
 			setException(exception);
 			setState(RequestState.Failed);
-			RiotApi.log.log(Level.SEVERE, "[" + object + "] Request > NullPointerException", e);
+			RiotApiV3.log.log(Level.SEVERE, "[" + object + "] Request > NullPointerException", e);
 			throw exception;
 		} finally {
 			if (connection != null) {

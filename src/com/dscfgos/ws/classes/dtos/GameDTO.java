@@ -7,7 +7,7 @@ import com.dscfgos.api.model.constants.GameType;
 import com.dscfgos.api.model.constants.SubType;
 import com.dscfgos.api.model.dtos.game.Player;
 import com.dscfgos.api.model.dtos.game.RawStats;
-import com.dscfgos.api.model.dtos.static_data.Champion;
+import com.dscfgos.api.model.dtos.v3.static_data.Champion;
 
 /**
  * @author dscfgos

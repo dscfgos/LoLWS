@@ -46,9 +46,9 @@ import com.dscfgos.api.model.dtos.status.Shard;
 import com.dscfgos.api.model.dtos.status.ShardStatus;
 import com.dscfgos.api.model.dtos.summoner.MasteryPages;
 import com.dscfgos.api.model.dtos.summoner.RunePages;
-import com.dscfgos.api.model.dtos.summoner.Summoner;
 import com.dscfgos.api.model.dtos.tournament.LobbyEventList;
 import com.dscfgos.api.model.dtos.tournament.TournamentCode;
+import com.dscfgos.api.model.dtos.v3.summoner.Summoner;
 import com.dscfgos.api.model.endpoints.methods.champion.GetChampionById;
 import com.dscfgos.api.model.endpoints.methods.champion.GetChampions;
 import com.dscfgos.api.model.endpoints.methods.championmastery.GetChampionMasteries;
@@ -70,7 +70,6 @@ import com.dscfgos.api.model.endpoints.methods.static_data.GetDataChampionList;
 import com.dscfgos.api.model.endpoints.methods.static_data.GetDataItem;
 import com.dscfgos.api.model.endpoints.methods.static_data.GetDataItemList;
 import com.dscfgos.api.model.endpoints.methods.static_data.GetDataLanguageStrings;
-import com.dscfgos.api.model.endpoints.methods.static_data.GetDataLanguages;
 import com.dscfgos.api.model.endpoints.methods.static_data.GetDataMap;
 import com.dscfgos.api.model.endpoints.methods.static_data.GetDataMastery;
 import com.dscfgos.api.model.endpoints.methods.static_data.GetDataMasteryList;
@@ -87,13 +86,14 @@ import com.dscfgos.api.model.endpoints.methods.status.GetShards;
 import com.dscfgos.api.model.endpoints.methods.summoner.GetMasteryPages;
 import com.dscfgos.api.model.endpoints.methods.summoner.GetRunePages;
 import com.dscfgos.api.model.endpoints.methods.summoner.GetSummonerNames;
-import com.dscfgos.api.model.endpoints.methods.summoner.GetSummonersById;
-import com.dscfgos.api.model.endpoints.methods.summoner.GetSummonersByName;
 import com.dscfgos.api.model.endpoints.methods.tournament.CreateProvider;
 import com.dscfgos.api.model.endpoints.methods.tournament.CreateTournament;
 import com.dscfgos.api.model.endpoints.methods.tournament.GetLobbyEventsByTournament;
 import com.dscfgos.api.model.endpoints.methods.tournament.GetTournamentCode;
 import com.dscfgos.api.model.endpoints.methods.tournament.UpdateTournamentCode;
+import com.dscfgos.api.model.endpoints.methods.v3.summoner.GetSummonerBySummonerName;
+import com.dscfgos.api.model.endpoints.methods.v3.static_data.GetDataLanguages;
+import com.dscfgos.api.model.endpoints.methods.v3.summoner.GetSummonerBySummonerId;
 import com.dscfgos.api.utils.Convert;
 
 public class RiotApiAsync 
@@ -1469,7 +1469,7 @@ public class RiotApiAsync
 	public AsyncRequest getSummonersById(Region region, String... summonerIds) {
 		Objects.requireNonNull(region);
 		Objects.requireNonNull(summonerIds);
-		ApiMethod method = new GetSummonersById(getConfig(), region, Convert.joinString(",", summonerIds));
+		ApiMethod method = new GetSummonerBySummonerId(getConfig(), region, Convert.joinString(",", summonerIds));
 		return endpointManager.callMethodAsynchronously(method);
 	}
 
@@ -1507,7 +1507,7 @@ public class RiotApiAsync
 	public AsyncRequest getSummonersByName(Region region, String... summonerNames) {
 		Objects.requireNonNull(region);
 		Objects.requireNonNull(summonerNames);
-		ApiMethod method = new GetSummonersByName(getConfig(), region, Convert.joinString(",", summonerNames));
+		ApiMethod method = new GetSummonerBySummonerName(getConfig(), region, Convert.joinString(",", summonerNames));
 		return endpointManager.callMethodAsynchronously(method);
 	}
 

@@ -19,6 +19,7 @@ package com.dscfgos.api.model.endpoints.methods.static_data;
 import com.dscfgos.api.model.classes.managers.ApiConfig;
 import com.dscfgos.api.model.constants.Region;
 import com.dscfgos.api.model.dtos.static_data.Realm;
+import com.dscfgos.api.model.endpoints.methods.v3.static_data.StaticDataApiMethod;
 
 public class GetDataRealm extends StaticDataApiMethod {
 

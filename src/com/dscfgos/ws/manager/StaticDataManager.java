@@ -10,8 +10,8 @@ import com.dscfgos.api.model.constants.ChampData;
 import com.dscfgos.api.model.constants.Locale;
 import com.dscfgos.api.model.constants.Region;
 import com.dscfgos.api.model.constants.SpellData;
-import com.dscfgos.api.model.dtos.static_data.Champion;
 import com.dscfgos.api.model.dtos.static_data.SummonerSpell;
+import com.dscfgos.api.model.dtos.v3.static_data.Champion;
 import com.dscfgos.ws.classes.utils.LoLApiUtils;
 import com.dscfgos.ws.classes.wrappers.Shards;
 

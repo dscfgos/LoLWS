@@ -1,23 +1,15 @@
 package com.dscfgos.ws.rest_ws;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.beanutils.BeanUtils;
-
-import com.dscfgos.admin.LocalesManager;
-import com.dscfgos.admin.ShardsLocalesManager;
-import com.dscfgos.admin.ShardsManager;
-import com.dscfgos.ws.classes.dtos.ShardDTO;
-import com.dscfgos.ws.classes.wrappers.Locales;
-import com.dscfgos.ws.classes.wrappers.Shards;
-import com.dscfgos.ws.classes.wrappers.Shards_Locales;
+import com.dscfgos.api.model.classes.managers.RiotApiException;
+import com.dscfgos.api.model.constants.ChampData;
+import com.dscfgos.api.model.constants.Locale;
+import com.dscfgos.api.model.constants.Region;
+import com.dscfgos.ws.classes.utils.LoLApiUtils;
 import com.google.gson.Gson;
 
 @Path("/test")
@@ -30,35 +22,14 @@ public class TestWS
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getShards()
 	{
-		List<Shards> shards = ShardsManager.getAllShards();
-		
-		List<ShardDTO> result = new ArrayList<>();
-		
-		for (Shards shard : shards) 
+		//LeaguePositionResultDTO shards = LeagueManager.getLeaguesPositionsByRegionAndSummonerId(5, "2291487");
+		Object result = null;
+		try 
 		{
-			
-			List<Shards_Locales> shard_locale_list = ShardsLocalesManager.getShardLocalesByShardId(shard.getId());
-			int[] ids = new int[shard_locale_list.size()];
-			for (int i = 0; i < ids.length; i++) 
-			{
-				ids[i] = shard_locale_list.get(i).getLocale_id();
-			}
-			
-			try 
-			{
-				List<Locales> locales = LocalesManager.getLocaleByIds(ids);
-				
-				ShardDTO shardDTO = new ShardDTO();
-				BeanUtils.copyProperties(shardDTO, shard);
-				
-				shardDTO.setLocales(locales);
-				
-				result.add(shardDTO);
-			} 
-			catch (IllegalAccessException | InvocationTargetException e) 
-			{
-				e.printStackTrace();
-			} 
+			result = LoLApiUtils.getRiotApi().getDataChampion(Region.LAS, 412, Locale.ES_ES, null, ChampData.IMAGE);
+		} 
+		catch (RiotApiException e) {
+			e.printStackTrace();
 		}
 		
 		return gson.toJson(result);

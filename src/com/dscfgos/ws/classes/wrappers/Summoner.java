@@ -12,7 +12,8 @@ public class Summoner
 	private long   revisionDate;		// - Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: profile icon change, playing the tutorial or advanced tutorial, finishing a game, summoner name change
 	private long   summonerLevel;		// - Summoner level associated with the summoner.
 	private long   shardid;				// - Shard ID.
-	
+	private long   accountId;			// - Account ID
+
 	
 	public long getId() {
 		return id;
@@ -49,6 +50,12 @@ public class Summoner
 	}
 	public void setShardid(long shardid) {
 		this.shardid = shardid;
+	}
+	public long getAccountId() {
+		return accountId;
+	}
+	public void setAccountId(long accountId) {
+		this.accountId = accountId;
 	}
 	
 	

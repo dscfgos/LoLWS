@@ -14,33 +14,34 @@
  * limitations under the License.
  */
 
-package com.dscfgos.api.model.endpoints.methods.summoner;
+package com.dscfgos.api.model.endpoints.methods.v3.summoner;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Map;
 import java.util.logging.Level;
 
 import com.dscfgos.api.model.classes.managers.ApiConfig;
-import com.dscfgos.api.model.classes.managers.RiotApi;
+import com.dscfgos.api.model.classes.managers.RiotApiV3;
 import com.dscfgos.api.model.constants.Region;
-import com.dscfgos.api.model.dtos.summoner.Summoner;
+import com.dscfgos.api.model.dtos.v3.summoner.Summoner;
 import com.dscfgos.api.utils.Convert;
 import com.google.gson.reflect.TypeToken;
 
-public class GetSummonersByName extends SummonerApiMethod {
+public class GetSummonerBySummonerName extends SummonerApiMethod {
 
-	public GetSummonersByName(ApiConfig config, Region region, String summonerNames) {
+	public GetSummonerBySummonerName(ApiConfig config, Region region, String summonerName) 
+	{
 		super(config);
 		setRegion(region);
-		summonerNames = Convert.normalizeSummonerName(summonerNames);
-		setReturnType(new TypeToken<Map<String, Summoner>>() {
-		}.getType());
-		try {
-			setUrlBase(region.getEndpoint() + "/v1.4/summoner/by-name/" + URLEncoder.encode(summonerNames, "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// This should never happen
-			RiotApi.log.log(Level.SEVERE, "URL Encoding Failed", e);
+		summonerName = Convert.normalizeSummonerName(summonerName);
+		setReturnType(new TypeToken<Summoner>(){}.getType());
+		try 
+		{
+			setUrlBase(region.getV3Endpoint() + "summoner/v3/summoners/by-name/" + URLEncoder.encode(summonerName, "UTF-8"));
+		} 
+		catch (UnsupportedEncodingException e) 
+		{
+			RiotApiV3.log.log(Level.SEVERE, "URL Encoding Failed", e);
 		}
 		addApiKeyParameter();
 	}

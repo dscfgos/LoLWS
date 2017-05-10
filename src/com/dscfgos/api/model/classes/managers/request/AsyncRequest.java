@@ -9,8 +9,8 @@ import java.util.logging.Level;
 
 import com.dscfgos.api.model.classes.managers.ApiConfig;
 import com.dscfgos.api.model.classes.managers.ApiMethod;
-import com.dscfgos.api.model.classes.managers.RiotApi;
 import com.dscfgos.api.model.classes.managers.RiotApiException;
+import com.dscfgos.api.model.classes.managers.RiotApiV3;
 
 public class AsyncRequest extends Request implements Runnable 
 {
@@ -176,7 +176,7 @@ public class AsyncRequest extends Request implements Runnable
 		try {
 			return super.getDto(true);
 		} catch (RiotApiException e) {
-			RiotApi.log.log(Level.FINE, "Retrieving Dto Failed", e);
+			RiotApiV3.log.log(Level.FINE, "Retrieving Dto Failed", e);
 		}
 		return null;
 	}

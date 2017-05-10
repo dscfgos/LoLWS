@@ -22,6 +22,7 @@ import com.dscfgos.api.model.constants.Locale;
 import com.dscfgos.api.model.constants.MasteryListData;
 import com.dscfgos.api.model.constants.Region;
 import com.dscfgos.api.model.dtos.static_data.MasteryList;
+import com.dscfgos.api.model.endpoints.methods.v3.static_data.StaticDataApiMethod;
 import com.dscfgos.api.utils.Convert;
 
 public class GetDataMasteryList extends StaticDataApiMethod {

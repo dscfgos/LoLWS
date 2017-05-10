@@ -1,6 +1,6 @@
 package com.dscfgos.ws.classes.dtos;
 
-import com.dscfgos.api.model.dtos.static_data.Champion;
+import com.dscfgos.api.model.dtos.v3.static_data.Champion;
 
 /**
  * @author dscfgos
@@ -14,6 +14,7 @@ public class BannedChampionDTO
 	private int   championId;	// - Banned champion ID
 	private Champion champion;
 	private int   pickTurn;	// - Turn during which the champion was banned
+	private long teamId;
 	public int getChampionId() {
 		return championId;
 	}
@@ -31,6 +32,12 @@ public class BannedChampionDTO
 	}
 	public void setChampion(Champion champion) {
 		this.champion = champion;
+	}
+	public long getTeamId() {
+		return teamId;
+	}
+	public void setTeamId(long teamId) {
+		this.teamId = teamId;
 	}
 	
     

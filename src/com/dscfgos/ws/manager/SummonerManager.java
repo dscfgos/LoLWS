@@ -32,6 +32,43 @@ public class SummonerManager
 			if(shard != null)
 			{
 				summoner = getSummonerByRegionAndNameFromRiot(shard.getSlug(), name);
+				
+				if(summoner != null)
+				{
+					summoner.setShardid(shard.getId());
+					BaseWrapperFactory<Summoner> baseWrapper = new BaseWrapperFactory<>();
+					baseWrapper.addItem(Summoner.class, summoner);
+					
+					result.setSummoner(summoner);
+				}
+				else
+				{
+					result.setResultCode(ErrorsConstants.SM_001);
+				}
+			}
+		}
+		else
+		{
+			result.setSummoner(summoner);
+		}
+
+		return result;
+	}
+	
+	public static SummonerResultDTO getSummonerByRegionAndId(int regionId, String name)
+	{
+		SummonerResultDTO result = new SummonerResultDTO();
+		
+		Summoner summoner = null ;
+
+		summoner = getSummonerByRegionIdAndIdFromDB(regionId, name);
+		if(summoner == null)
+		{
+			Shards shard = ShardsManager.getShardsById(regionId);
+			if(shard != null)
+			{
+				summoner = getSummonerByRegionAndIdFromRiot(shard.getSlug(), name);
+				
 				if(summoner != null)
 				{
 					summoner.setShardid(shard.getId());
@@ -103,7 +140,34 @@ public class SummonerManager
 		Summoner result = null;
 		try 
 		{
-			com.dscfgos.api.model.dtos.summoner.Summoner summoner  = LoLApiUtils.getRiotApi().getSummonerByName(Region.getRegionByName(region), name);
+			com.dscfgos.api.model.dtos.v3.summoner.Summoner summoner  = LoLApiUtils.getRiotApi().getSummonerByName(Region.getRegionByName(region), name);
+			if(summoner != null)
+			{
+				result = new Summoner();
+			}
+			try 
+			{
+				BeanUtils.copyProperties(result, summoner);
+			} 
+			catch (IllegalAccessException | InvocationTargetException e) 
+			{
+				e.printStackTrace();
+			}
+
+		} 
+		catch (RiotApiException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
+	private static Summoner getSummonerByRegionAndIdFromRiot(String region, String summonerId)
+	{
+		Summoner result = null;
+		try 
+		{
+			com.dscfgos.api.model.dtos.v3.summoner.Summoner summoner  = LoLApiUtils.getRiotApi().getSummonerById(Region.LAS, summonerId);
 			if(summoner != null)
 			{
 				result = new Summoner();
@@ -128,6 +192,17 @@ public class SummonerManager
 	private static Summoner getSummonerByRegionIdAndNameFromDB(int regionId, String name)
 	{
 		FieldValue field1 = new FieldValue("name", name, Types.VARCHAR);
+		FieldValue field2 = new FieldValue("shardid", regionId, Types.INTEGER);
+
+		BaseWrapperFactory<Summoner> baseWrapperFactory = new BaseWrapperFactory<>();
+		Summoner result = baseWrapperFactory.getItemByFields(Summoner.class, new FieldValue[]{field1,field2}, WhereOperation.AND);
+
+		return result;
+	}
+	
+	private static Summoner getSummonerByRegionIdAndIdFromDB(int regionId, String id)
+	{
+		FieldValue field1 = new FieldValue("id", id, Types.BIGINT);
 		FieldValue field2 = new FieldValue("shardid", regionId, Types.INTEGER);
 
 		BaseWrapperFactory<Summoner> baseWrapperFactory = new BaseWrapperFactory<>();

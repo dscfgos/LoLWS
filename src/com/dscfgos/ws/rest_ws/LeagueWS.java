@@ -17,8 +17,8 @@ public class LeagueWS
 	@GET
 	@Path("/summoner")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getSummonerLeagueData(@QueryParam("region") int regionId, @QueryParam("id") long id)
+	public String getSummonerLeagueData(@QueryParam("region") int regionId, @QueryParam("summonerId") String summonerId)
 	{
-		return gson.toJson(LeagueManager.getLeagueByRegionAndName(regionId,id));
+		return gson.toJson(LeagueManager.getLeaguesPositionsByRegionAndSummonerId(regionId, summonerId));
 	}
 }

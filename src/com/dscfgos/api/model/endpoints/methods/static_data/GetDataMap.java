@@ -21,6 +21,7 @@ import com.dscfgos.api.model.classes.managers.UrlParameter;
 import com.dscfgos.api.model.constants.Locale;
 import com.dscfgos.api.model.constants.Region;
 import com.dscfgos.api.model.dtos.static_data.MapData;
+import com.dscfgos.api.model.endpoints.methods.v3.static_data.StaticDataApiMethod;
 
 public class GetDataMap extends StaticDataApiMethod {
 

@@ -22,6 +22,7 @@ import com.dscfgos.api.model.constants.Locale;
 import com.dscfgos.api.model.constants.Region;
 import com.dscfgos.api.model.constants.RuneData;
 import com.dscfgos.api.model.dtos.static_data.Rune;
+import com.dscfgos.api.model.endpoints.methods.v3.static_data.StaticDataApiMethod;
 import com.dscfgos.api.utils.Convert;
 
 public class GetDataRune extends StaticDataApiMethod {

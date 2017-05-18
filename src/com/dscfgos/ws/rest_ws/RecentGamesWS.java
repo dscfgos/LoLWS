@@ -6,7 +6,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.dscfgos.ws.manager.RecentGamesManager;
+import com.dscfgos.api.model.constants.Locale;
+import com.dscfgos.ws.manager.GamesHistoryManager;
 import com.google.gson.Gson;
 
 @Path("/recent")
@@ -17,8 +18,8 @@ public class RecentGamesWS
 	@GET
 	@Path("/games")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getRecentGamesData(@QueryParam("region") int regionId, @QueryParam("id") long summonerId, @QueryParam("locale") String locale)
+	public String getRecentGamesData(@QueryParam("region") int regionId, @QueryParam("id") long accountId, @QueryParam("locale") String locale)
 	{
-		return gson.toJson(RecentGamesManager.getRecentGamesByRegionAndName(regionId, summonerId, locale));
+		return gson.toJson(GamesHistoryManager.getGamesHistoryByRegionAndAccount(regionId, accountId, Locale.getById(locale)));
 	}
 }

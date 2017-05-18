@@ -9,19 +9,16 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import com.dscfgos.admin.ShardsManager;
 import com.dscfgos.api.model.classes.managers.RiotApiException;
-import com.dscfgos.api.model.constants.ChampData;
 import com.dscfgos.api.model.constants.Locale;
-import com.dscfgos.api.model.constants.PlatformId;
 import com.dscfgos.api.model.constants.Region;
 import com.dscfgos.api.model.constants.SpellData;
-import com.dscfgos.api.model.dtos.champion_mastery.ChampionMastery;
-import com.dscfgos.api.model.dtos.current_game.BannedChampion;
-import com.dscfgos.api.model.dtos.current_game.CurrentGameInfo;
-import com.dscfgos.api.model.dtos.current_game.CurrentGameParticipant;
-import com.dscfgos.api.model.dtos.static_data.SummonerSpell;
 import com.dscfgos.api.model.dtos.stats.ChampionStats;
 import com.dscfgos.api.model.dtos.stats.RankedStats;
-import com.dscfgos.api.model.dtos.v3.static_data.Champion;
+import com.dscfgos.api.model.dtos.v3.champion_mastery.ChampionMastery;
+import com.dscfgos.api.model.dtos.v3.spectator.BannedChampion;
+import com.dscfgos.api.model.dtos.v3.spectator.CurrentGameInfo;
+import com.dscfgos.api.model.dtos.v3.spectator.CurrentGameParticipant;
+import com.dscfgos.api.model.dtos.v3.static_data.SummonerSpell;
 import com.dscfgos.ws.classes.constants.ErrorsConstants;
 import com.dscfgos.ws.classes.dtos.BannedChampionDTO;
 import com.dscfgos.ws.classes.dtos.CurrentGameInfoDTO;
@@ -37,9 +34,12 @@ public class CurrentGameManager
 		CurrentGameResultDTO result = new CurrentGameResultDTO();
 
 		Shards shard = ShardsManager.getShardsById(regionId);
+		
 		if(shard != null)
 		{
-			CurrentGameInfo currentGame = getCurrentGameInfoFromRiot(PlatformId.getPlatformByName(shard.getSlug()), summonerId);
+			Region region = Region.getRegionByName(shard.getSlug());
+
+			CurrentGameInfo currentGame = getCurrentGameInfoFromRiot(region, summonerId);
 			if(currentGame != null)
 			{
 				
@@ -57,8 +57,8 @@ public class CurrentGameManager
 						{
 							BannedChampionDTO bannedDTO = new BannedChampionDTO();
 							BeanUtils.copyProperties(bannedDTO, banned);
-							Champion champion = StaticDataManager.getChampionById(banned.getChampionId(), regionId, Locale.getById(locale), "", true, ChampData.IMAGE);
-							bannedDTO.setChampion(champion);
+//							Champion champion = StaticDataManager.getBasicChampionById(banned.getChampionId(), region, Locale.getById(locale), "");
+//							bannedDTO.setChampion(champion);
 							
 							bannedList.add(bannedDTO);
 						}
@@ -72,17 +72,17 @@ public class CurrentGameManager
 						BeanUtils.copyProperties(participantDTO, participant);
 						
 						//Champion
-						Champion champion = StaticDataManager.getChampionById(participant.getChampionId(), regionId, Locale.getById(locale), "", true, ChampData.IMAGE);
+						//Champion champion = StaticDataManager.getBasicChampionById(participant.getChampionId(), region, Locale.getById(locale), "");
 						//Spell1
 						SummonerSpell spell1 = StaticDataManager.getSummonerSpellById(participant.getSpell1Id(), regionId, Locale.getById(locale), "", SpellData.IMAGE);
 						//Spell2
 						SummonerSpell spell2 = StaticDataManager.getSummonerSpellById(participant.getSpell2Id(), regionId, Locale.getById(locale), "", SpellData.IMAGE);
 						//Champion Mastery
-						ChampionMastery champMastery = getChampionMasteryFromRiot(PlatformId.getPlatformByName(shard.getSlug()), participant.getSummonerId(), participant.getChampionId());
+						ChampionMastery champMastery = getChampionMasteryFromRiot(region, participant.getSummonerId(), participant.getChampionId());
 						
 						ChampionStats champStats = getChampionStatsFromRiot(Region.getRegionByName(shard.getSlug()), summonerId, participant.getChampionId());
 						
-						participantDTO.setChampion(champion);
+						//participantDTO.setChampion(champion);
 						participantDTO.setSpell1(spell1);
 						participantDTO.setSpell2(spell2);
 						participantDTO.setChampionMastery(champMastery);
@@ -114,12 +114,12 @@ public class CurrentGameManager
 		return result;
 	}
 
-	private static CurrentGameInfo getCurrentGameInfoFromRiot(PlatformId platformId, long summonerId)
+	private static CurrentGameInfo getCurrentGameInfoFromRiot(Region region, long summonerId)
 	{
 		CurrentGameInfo result = null;
 		try 
 		{
-			result  = LoLApiUtils.getRiotApi().getCurrentGameInfo(platformId, summonerId);
+			result  = LoLApiUtils.getRiotApi().getCurrentGameInfo(region, summonerId);
 		} 
 		catch (RiotApiException e) 
 		{
@@ -129,14 +129,14 @@ public class CurrentGameManager
 		return result;
 	}
 	
-	private static ChampionMastery getChampionMasteryFromRiot(PlatformId platformId, long summonerId, long championId)
+	private static ChampionMastery getChampionMasteryFromRiot(Region region, long summonerId, long championId)
 	{
 		ChampionMastery result = null;
 		try 
 		{
 			TimeUnit.MILLISECONDS.sleep(500);
 
-			result  = LoLApiUtils.getRiotApi().getChampionMastery(platformId, summonerId, championId);
+			result  = LoLApiUtils.getRiotApi().getChampionMastery(region, summonerId, championId);
 		} 
 		catch (RiotApiException | InterruptedException e) 
 		{
@@ -153,7 +153,7 @@ public class CurrentGameManager
 		{
 			TimeUnit.MILLISECONDS.sleep(500);
 
-			RankedStats stats = LoLApiUtils.getRiotApi().getRankedStats(region, summonerId);
+			RankedStats stats = LoLApiUtils.getRiotApi().getRankedStats(region, null, summonerId);
 			if(stats != null && stats.getChampions() != null && stats.getChampions().size() > 0)
 			{
 				for (ChampionStats item : stats.getChampions()) 

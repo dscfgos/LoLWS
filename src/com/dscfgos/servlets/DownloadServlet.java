@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.dscfgos.api.model.classes.managers.RiotApiException;
 import com.dscfgos.api.model.constants.Region;
-import com.dscfgos.api.model.dtos.static_data.Realm;
+import com.dscfgos.api.model.dtos.v3.static_data.Realm;
 import com.dscfgos.utils.ImageManager;
 import com.dscfgos.utils.StringUtils;
 import com.dscfgos.ws.classes.constants.AppConstants;

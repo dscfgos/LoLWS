@@ -7,35 +7,38 @@ import java.util.logging.Logger;
 
 import com.dscfgos.api.model.constants.ChampData;
 import com.dscfgos.api.model.constants.Locale;
-import com.dscfgos.api.model.constants.PlatformId;
 import com.dscfgos.api.model.constants.Region;
 import com.dscfgos.api.model.constants.RuneListData;
 import com.dscfgos.api.model.constants.Season;
 import com.dscfgos.api.model.constants.SpellData;
-import com.dscfgos.api.model.dtos.champion_mastery.ChampionMastery;
-import com.dscfgos.api.model.dtos.current_game.CurrentGameInfo;
-import com.dscfgos.api.model.dtos.game.RecentGames;
-import com.dscfgos.api.model.dtos.static_data.Realm;
-import com.dscfgos.api.model.dtos.static_data.RuneList;
-import com.dscfgos.api.model.dtos.static_data.SummonerSpell;
 import com.dscfgos.api.model.dtos.stats.RankedStats;
 import com.dscfgos.api.model.dtos.status.Shard;
 import com.dscfgos.api.model.dtos.status.ShardStatus;
+import com.dscfgos.api.model.dtos.v3.champion_mastery.ChampionMastery;
 import com.dscfgos.api.model.dtos.v3.league.LeaguePosition;
+import com.dscfgos.api.model.dtos.v3.match.Match;
+import com.dscfgos.api.model.dtos.v3.match.Matchlist;
+import com.dscfgos.api.model.dtos.v3.spectator.CurrentGameInfo;
 import com.dscfgos.api.model.dtos.v3.static_data.Champion;
+import com.dscfgos.api.model.dtos.v3.static_data.Realm;
+import com.dscfgos.api.model.dtos.v3.static_data.RuneList;
+import com.dscfgos.api.model.dtos.v3.static_data.SummonerSpell;
+import com.dscfgos.api.model.dtos.v3.static_data.SummonerSpellList;
 import com.dscfgos.api.model.dtos.v3.summoner.Summoner;
-import com.dscfgos.api.model.endpoints.methods.championmastery.GetChampionMastery;
-import com.dscfgos.api.model.endpoints.methods.current_game.GetCurrentGameInfo;
-import com.dscfgos.api.model.endpoints.methods.game.GetRecentGames;
-import com.dscfgos.api.model.endpoints.methods.static_data.GetDataRealm;
-import com.dscfgos.api.model.endpoints.methods.static_data.GetDataRuneList;
-import com.dscfgos.api.model.endpoints.methods.static_data.GetDataSummonerSpell;
 import com.dscfgos.api.model.endpoints.methods.stats.GetRankedStats;
 import com.dscfgos.api.model.endpoints.methods.status.GetShardStatus;
 import com.dscfgos.api.model.endpoints.methods.status.GetShards;
+import com.dscfgos.api.model.endpoints.methods.v3.champion_mastery.GetChampionMastery;
 import com.dscfgos.api.model.endpoints.methods.v3.league.GetLeaguePositionBySummonerId;
+import com.dscfgos.api.model.endpoints.methods.v3.match.GetMatch;
+import com.dscfgos.api.model.endpoints.methods.v3.match.GetRecentGames;
+import com.dscfgos.api.model.endpoints.methods.v3.spectator.GetActiveGameInfo;
 import com.dscfgos.api.model.endpoints.methods.v3.static_data.GetDataChampion;
 import com.dscfgos.api.model.endpoints.methods.v3.static_data.GetDataLanguages;
+import com.dscfgos.api.model.endpoints.methods.v3.static_data.GetDataRealm;
+import com.dscfgos.api.model.endpoints.methods.v3.static_data.GetDataRuneList;
+import com.dscfgos.api.model.endpoints.methods.v3.static_data.GetDataSummonerSpell;
+import com.dscfgos.api.model.endpoints.methods.v3.static_data.GetDataSummonerSpellList;
 import com.dscfgos.api.model.endpoints.methods.v3.summoner.GetSummonerByAccountId;
 import com.dscfgos.api.model.endpoints.methods.v3.summoner.GetSummonerBySummonerId;
 import com.dscfgos.api.model.endpoints.methods.v3.summoner.GetSummonerBySummonerName;
@@ -97,7 +100,7 @@ public class RiotApiV3 implements Cloneable
 		return endpointManager.callMethodAndReturnDto(method);
 	}
 
-	public Summoner getSummonerByAccountId(Region region, String accountId) throws RiotApiException 
+	public Summoner getSummonerByAccountId(Region region, long accountId) throws RiotApiException 
 	{
 		Objects.requireNonNull(region);
 		Objects.requireNonNull(accountId);
@@ -141,52 +144,89 @@ public class RiotApiV3 implements Cloneable
 		return endpointManager.callMethodAndReturnDto(method);
 	}
 	
-	//TODO 
-	
-	
-	
-	public ChampionMastery getChampionMastery(PlatformId platformId, long summonerId, long championId) throws RiotApiException {
-		Objects.requireNonNull(platformId);
-		ApiMethod method = new GetChampionMastery(getConfig(), platformId, summonerId, championId);
-		return endpointManager.callMethodAndReturnDto(method);
-	}
-
-	public CurrentGameInfo getCurrentGameInfo(PlatformId platformId, long summonerId) throws RiotApiException {
-		Objects.requireNonNull(platformId);
-		Objects.requireNonNull(summonerId);
-		ApiMethod method = new GetCurrentGameInfo(getConfig(), platformId, summonerId);
-		return endpointManager.callMethodAndReturnDto(method);
-	}
-
-	public Realm getDataRealm(Region region) throws RiotApiException {
+	public Realm getDataRealm(Region region) throws RiotApiException 
+	{
 		Objects.requireNonNull(region);
 		ApiMethod method = new GetDataRealm(getConfig(), region);
 		return endpointManager.callMethodAndReturnDto(method);
 	}
-
-	public RuneList getDataRuneList(Region region, Locale locale, String version, RuneListData... runeListData) throws RiotApiException {
+	
+	public RuneList getDataRuneList(Region region, Locale locale, String version, RuneListData... runeListData) throws RiotApiException 
+	{
 		Objects.requireNonNull(region);
 		ApiMethod method = new GetDataRuneList(getConfig(), region, locale, version, runeListData);
 		return endpointManager.callMethodAndReturnDto(method);
 	}
-
-	public RuneList getDataRuneList(Region region) throws RiotApiException {
-		Objects.requireNonNull(region);
-		return getDataRuneList(region, null, null, (RuneListData) null);
-	}
-
-	public SummonerSpell getDataSummonerSpell(Region region, int id, Locale locale, String version, SpellData... spellData) throws RiotApiException {
+	
+	
+	public SummonerSpell getDataSummonerSpell(Region region, int id, Locale locale, String version, SpellData... spellData) throws RiotApiException 
+	{
 		Objects.requireNonNull(region);
 		ApiMethod method = new GetDataSummonerSpell(getConfig(), region, id, locale, version, spellData);
 		return endpointManager.callMethodAndReturnDto(method);
 	}
-
-	public SummonerSpell getDataSummonerSpell(Region region, int id) throws RiotApiException {
+	
+	public SummonerSpellList getAllDataSummonerSpell(Region region, Locale locale, String version, SpellData... spellData) throws RiotApiException 
+	{
 		Objects.requireNonNull(region);
-		return getDataSummonerSpell(region, id, null, null, (SpellData) null);
+		ApiMethod method = new GetDataSummonerSpellList(getConfig(), region, locale, version, true,spellData);
+	
+		return endpointManager.callMethodAndReturnDto(method);
+	}
+	//TODO 
+	
+	
+	//********************************************//
+	// 	CHAMPION-MASTERY-V3									  
+	//********************************************//
+	
+	public ChampionMastery getChampionMastery(Region region, long summonerId, long championId) throws RiotApiException {
+		Objects.requireNonNull(region);
+		ApiMethod method = new GetChampionMastery(getConfig(), region, summonerId, championId);
+		return endpointManager.callMethodAndReturnDto(method);
+	}
+	
+	
+	
+
+	//TODO 
+	
+	//********************************************//
+	// 	SPECTATOR-V3								  
+	//********************************************//
+	
+	public CurrentGameInfo getCurrentGameInfo(Region region, long summonerId) throws RiotApiException 
+	{
+		Objects.requireNonNull(region);
+		Objects.requireNonNull(summonerId);
+		ApiMethod method = new GetActiveGameInfo(getConfig(), region, summonerId);
+		return endpointManager.callMethodAndReturnDto(method);
 	}
 
+	
+	//TODO 
 
+	
+	//********************************************//
+	// 	MATCH-V3								  
+	//********************************************//
+	public Matchlist getRecentGamesByAccountId(Region region, long summonerAccountId) throws RiotApiException 
+	{
+		Objects.requireNonNull(region);
+		Objects.requireNonNull(summonerAccountId);
+		ApiMethod method = new GetRecentGames(getConfig(), region, summonerAccountId);
+		return endpointManager.callMethodAndReturnDto(method);
+	}
+	
+	public Match getMatchByGameId(Region region, long gameId) throws RiotApiException 
+	{
+		Objects.requireNonNull(region);
+		ApiMethod method = new GetMatch(getConfig(), region, gameId);
+		return endpointManager.callMethodAndReturnDto(method);
+	}
+	
+	
+	//TODO
 
 	public RankedStats getRankedStats(Region region, Season season, long summonerId) throws RiotApiException {
 		Objects.requireNonNull(region);
@@ -194,17 +234,6 @@ public class RiotApiV3 implements Cloneable
 		return endpointManager.callMethodAndReturnDto(method);
 	}
 
-	public RankedStats getRankedStats(Region region, long summonerId) throws RiotApiException {
-		Objects.requireNonNull(region);
-		return getRankedStats(region, null, summonerId);
-	}
-
-	public RecentGames getRecentGames(Region region, long summonerId) throws RiotApiException {
-		Objects.requireNonNull(region);
-		Objects.requireNonNull(summonerId);
-		ApiMethod method = new GetRecentGames(getConfig(), region, summonerId);
-		return endpointManager.callMethodAndReturnDto(method);
-	}
 
 	public List<Shard> getShards() throws RiotApiException {
 		ApiMethod method = new GetShards(getConfig());

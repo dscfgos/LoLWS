@@ -390,11 +390,11 @@ public class BaseWrapperFactory<T>
 			{
 				if(i==0)
 				{
-					result += sqlFields[i].getName() + " = ?" ;
+					result += "\""+sqlFields[i].getName()+"\"" + " = ?" ;
 				}
 				else
 				{
-					result += " AND " + sqlFields[i].getName() + " = ?" ;
+					result += " AND " + "\""+sqlFields[i].getName()+"\"" + " = ?" ;
 				}
 			}
 

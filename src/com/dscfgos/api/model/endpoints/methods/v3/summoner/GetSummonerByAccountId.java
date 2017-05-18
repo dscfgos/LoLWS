@@ -23,7 +23,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class GetSummonerByAccountId extends SummonerApiMethod {
 
-	public GetSummonerByAccountId(ApiConfig config, Region region, String accountId) {
+	public GetSummonerByAccountId(ApiConfig config, Region region, long accountId) {
 		super(config);
 		setRegion(region);
 		setReturnType(new TypeToken<Summoner>() {

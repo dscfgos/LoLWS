@@ -1,5 +1,7 @@
 package com.dscfgos.api.model.endpoints.methods.v3.league;
-
+/*
+ * Copyright 2017 dscfgos
+ */
 import java.util.Set;
 
 import com.dscfgos.api.model.classes.managers.ApiConfig;

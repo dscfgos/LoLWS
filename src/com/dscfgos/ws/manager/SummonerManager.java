@@ -67,7 +67,47 @@ public class SummonerManager
 			Shards shard = ShardsManager.getShardsById(regionId);
 			if(shard != null)
 			{
-				summoner = getSummonerByRegionAndIdFromRiot(shard.getSlug(), name);
+				Region region = Region.getRegionByName(shard.getSlug());
+
+				summoner = getSummonerByRegionAndIdFromRiot(region, name);
+				
+				if(summoner != null)
+				{
+					summoner.setShardid(shard.getId());
+					BaseWrapperFactory<Summoner> baseWrapper = new BaseWrapperFactory<>();
+					baseWrapper.addItem(Summoner.class, summoner);
+					
+					result.setSummoner(summoner);
+				}
+				else
+				{
+					result.setResultCode(ErrorsConstants.SM_001);
+				}
+			}
+		}
+		else
+		{
+			result.setSummoner(summoner);
+		}
+
+		return result;
+	}
+	
+	public static SummonerResultDTO getSummonerByRegionAndAccountId(int regionId, long accountId)
+	{
+		SummonerResultDTO result = new SummonerResultDTO();
+		
+		Summoner summoner = null ;
+
+		summoner = getSummonerByRegionIdAndAccountIdFromDB(regionId, accountId);
+		if(summoner == null)
+		{
+			Shards shard = ShardsManager.getShardsById(regionId);
+			if(shard != null)
+			{
+				Region region = Region.getRegionByName(shard.getSlug());
+
+				summoner = getSummonerByRegionAndAccountIdFromRiot(region, accountId);
 				
 				if(summoner != null)
 				{
@@ -162,12 +202,39 @@ public class SummonerManager
 		return result;
 	}
 	
-	private static Summoner getSummonerByRegionAndIdFromRiot(String region, String summonerId)
+	private static Summoner getSummonerByRegionAndIdFromRiot(Region region, String summonerId)
 	{
 		Summoner result = null;
 		try 
 		{
-			com.dscfgos.api.model.dtos.v3.summoner.Summoner summoner  = LoLApiUtils.getRiotApi().getSummonerById(Region.LAS, summonerId);
+			com.dscfgos.api.model.dtos.v3.summoner.Summoner summoner  = LoLApiUtils.getRiotApi().getSummonerById(region, summonerId);
+			if(summoner != null)
+			{
+				result = new Summoner();
+			}
+			try 
+			{
+				BeanUtils.copyProperties(result, summoner);
+			} 
+			catch (IllegalAccessException | InvocationTargetException e) 
+			{
+				e.printStackTrace();
+			}
+
+		} 
+		catch (RiotApiException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
+	private static Summoner getSummonerByRegionAndAccountIdFromRiot(Region region, long accountId)
+	{
+		Summoner result = null;
+		try 
+		{
+			com.dscfgos.api.model.dtos.v3.summoner.Summoner summoner  = LoLApiUtils.getRiotApi().getSummonerByAccountId(region, accountId);
 			if(summoner != null)
 			{
 				result = new Summoner();
@@ -203,6 +270,17 @@ public class SummonerManager
 	private static Summoner getSummonerByRegionIdAndIdFromDB(int regionId, String id)
 	{
 		FieldValue field1 = new FieldValue("id", id, Types.BIGINT);
+		FieldValue field2 = new FieldValue("shardid", regionId, Types.INTEGER);
+
+		BaseWrapperFactory<Summoner> baseWrapperFactory = new BaseWrapperFactory<>();
+		Summoner result = baseWrapperFactory.getItemByFields(Summoner.class, new FieldValue[]{field1,field2}, WhereOperation.AND);
+
+		return result;
+	}
+	
+	private static Summoner getSummonerByRegionIdAndAccountIdFromDB(int regionId, long accountId)
+	{
+		FieldValue field1 = new FieldValue("accountId", accountId, Types.BIGINT);
 		FieldValue field2 = new FieldValue("shardid", regionId, Types.INTEGER);
 
 		BaseWrapperFactory<Summoner> baseWrapperFactory = new BaseWrapperFactory<>();

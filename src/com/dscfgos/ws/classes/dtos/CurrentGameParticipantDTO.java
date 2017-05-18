@@ -2,11 +2,11 @@ package com.dscfgos.ws.classes.dtos;
 
 import java.util.List;
 
-import com.dscfgos.api.model.dtos.champion_mastery.ChampionMastery;
-import com.dscfgos.api.model.dtos.current_game.Mastery;
-import com.dscfgos.api.model.dtos.current_game.Rune;
-import com.dscfgos.api.model.dtos.static_data.SummonerSpell;
+import com.dscfgos.api.model.dtos.static_data.Mastery;
+import com.dscfgos.api.model.dtos.v3.champion_mastery.ChampionMastery;
 import com.dscfgos.api.model.dtos.v3.static_data.Champion;
+import com.dscfgos.api.model.dtos.v3.static_data.Rune;
+import com.dscfgos.api.model.dtos.v3.static_data.SummonerSpell;
 
 /**
  * @author dscfgos
